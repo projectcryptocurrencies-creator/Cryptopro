@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Crypto Project Broker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="font-['Inter'] bg-slate-50 min-h-screen flex items-center justify-center p-4">
+    <div class="w-full max-w-md">
+        <div class="bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden">
+            <div class="p-8">
+                <div class="text-center mb-8">
+                    <div class="inline-flex items-center justify-center w-16 h-16 bg-blue-100 rounded-full mb-4">
+                        <i data-lucide="trending-up" class="w-8 h-8 text-blue-600"></i>
+                    </div>
+                    <h1 class="text-2xl font-bold text-slate-900">Welcome Back</h1>
+                    <p class="text-slate-500 mt-2">Sign in to access your portfolio</p>
+                </div>
+
+                <div class="mb-6">
+                    <div class="flex rounded-lg bg-slate-100 p-1">
+                        <button id="clientTab" class="flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all bg-white text-blue-600 shadow-sm">
+                            Client
+                        </button>
+                        <button id="adminTab" class="flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all text-slate-600 hover:text-slate-900">
+                            Admin
+                        </button>
+                    </div>
+                </div>
+
+                <form id="loginForm" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Email Address</label>
+                        <div class="relative">
+                            <i data-lucide="mail" class="absolute left-3 top-3 w-5 h-5 text-slate-400"></i>
+                            <input type="email" id="email" required 
+                                class="w-full pl-10 pr-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+                                placeholder="Enter your email">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Password</label>
+                        <div class="relative">
+                            <i data-lucide="lock" class="absolute left-3 top-3 w-5 h-5 text-slate-400"></i>
+                            <input type="password" id="password" required 
+                                class="w-full pl-10 pr-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+                                placeholder="Enter your password">
+                            <button type="button" id="togglePassword" class="absolute right-3 top-3 text-slate-400 hover:text-slate-600">
+                                <i data-lucide="eye" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between text-sm">
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" class="w-4 h-4 text-blue-600 rounded border-slate-300 focus:ring-blue-500">
+                            <span class="text-slate-600">Remember me</span>
+                        </label>
+                        <a href="#" class="text-blue-600 hover:text-blue-700 font-medium">Forgot password?</a>
+                    </div>
+
+                    <button type="submit" id="loginBtn"
+                        class="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition shadow-lg shadow-blue-600/25 flex items-center justify-center gap-2">
+                        <span>Sign In</span>
+                        <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                    </button>
+                </form>
+
+                <div class="mt-6 text-center">
+                    <p class="text-sm text-slate-600">
+                        Don't have an account? 
+                        <span class="text-slate-400">Contact admin to create one</span>
+                    </p>
+                </div>
+            </div>
+            
+            <div class="bg-slate-50 px-8 py-4 border-t border-slate-200">
+                <div class="flex items-center justify-center gap-2 text-sm text-slate-500">
+                    <i data-lucide="shield-check" class="w-4 h-4"></i>
+                    <span>Secure SSL Encryption</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center mt-6">
+            <a href="index.html" class="text-slate-500 hover:text-slate-700 text-sm flex items-center justify-center gap-1">
+                <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                Back to Home
+            </a>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed top-4 right-4 bg-white border border-slate-200 rounded-lg shadow-xl p-4 transform translate-x-full transition-transform duration-300 z-50 max-w-sm">
+        <div class="flex items-start gap-3">
+            <div id="toastIcon" class="w-8 h-8 rounded-full flex items-center justify-center shrink-0">
+                <i data-lucide="check-circle" class="w-5 h-5"></i>
+            </div>
+            <div>
+                <h4 id="toastTitle" class="font-semibold text-slate-900">Success</h4>
+                <p id="toastMessage" class="text-sm text-slate-600 mt-1">Operation completed successfully.</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        lucide.createIcons();
+        
+        let isAdminMode = false;
+        
+        // Tab switching
+        const clientTab = document.getElementById('clientTab');
+        const adminTab = document.getElementById('adminTab');
+        const emailInput = document.getElementById('email');
+        
+        clientTab.addEventListener('click', function() {
+            isAdminMode = false;
+            clientTab.classList.add('bg-white', 'text-blue-600', 'shadow-sm');
+            clientTab.classList.remove('text-slate-600');
+            adminTab.classList.remove('bg-white', 'text-blue-600', 'shadow-sm');
+            adminTab.classList.add('text-slate-600');
+            emailInput.placeholder = 'Enter your email';
+        });
+        
+        adminTab.addEventListener('click', function() {
+            isAdminMode = true;
+            adminTab.classList.add('bg-white', 'text-blue-600', 'shadow-sm');
+            adminTab.classList.remove('text-slate-600');
+            clientTab.classList.remove('bg-white', 'text-blue-600', 'shadow-sm');
+            clientTab.classList.add('text-slate-600');
+            emailInput.placeholder = 'admin@cryptobroker.com';
+        });
+        
+        // Password toggle
+        const togglePasswordBtn = document.getElementById('togglePassword');
+        const passwordInput = document.getElementById('password');
+        
+        togglePasswordBtn.addEventListener('click', function() {
+            const type = passwordInput.type === 'password' ? 'text' : 'password';
+            passwordInput.type = type;
+            
+            const icon = this.querySelector('i');
+            if (type === 'password') {
+                icon.setAttribute('data-lucide', 'eye');
+            } else {
+                icon.setAttribute('data-lucide', 'eye-off');
+            }
+            lucide.createIcons();
+        });
+        
+        // Login form submission
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = passwordInput.value;
+            const loginBtn = document.getElementById('loginBtn');
+            
+            // Show loading state
+            loginBtn.innerHTML = '<span>Signing in...</span>';
+            loginBtn.disabled = true;
+            
+            // Attempt login
+            const result = login(email, password, isAdminMode);
+            
+            if (result.success) {
+                showToast('Success', 'Login successful! Redirecting...', 'success');
+                setTimeout(() => {
+                    window.location.href = result.redirect;
+                }, 1000);
+            } else {
+                showToast('Error', result.message, 'error');
+                loginBtn.innerHTML = '<span>Sign In</span><i data-lucide="arrow-right" class="w-5 h-5"></i>';
+                loginBtn.disabled = false;
+                lucide.createIcons();
+            }
+        });
+        
+        // Toast notification function
+        function showToast(title, message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const toastTitle = document.getElementById('toastTitle');
+            const toastMessage = document.getElementById('toastMessage');
+            const toastIcon = document.getElementById('toastIcon');
+            
+            toastTitle.textContent = title;
+            toastMessage.textContent = message;
+            
+            if (type === 'success') {
+                toastIcon.className = 'w-8 h-8 rounded-full flex items-center justify-center shrink-0 bg-green-100 text-green-600';
+                toastIcon.innerHTML = '<i data-lucide="check-circle" class="w-5 h-5"></i>';
+            } else if (type === 'error') {
+                toastIcon.className = 'w-8 h-8 rounded-full flex items-center justify-center shrink-0 bg-red-100 text-red-600';
+                toastIcon.innerHTML = '<i data-lucide="alert-circle" class="w-5 h-5"></i>';
+            }
+            
+            lucide.createIcons();
+            
+            toast.classList.remove('translate-x-full');
+            setTimeout(() => {
+                toast.classList.add('translate-x-full');
+            }, 5000);
+        }
+        
+        // Check for admin param in URL
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('admin') === 'true') {
+            adminTab.click();
+        }
+    </script>
+</body>
+</html>
